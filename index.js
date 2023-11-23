@@ -1,52 +1,60 @@
+let isModalOpen = false;
+let contrastToggle = false;
+const scaleFactor = 1 / 20;
 
-function renderBooks() {
-const booksWrapper = document.querySelector( '.books');
+function moveBackground(event) {
+  const shapes = document.querySelectorAll(".shape");
+  const x = event.clientX * scaleFactor;
+  const y = event.clientY * scaleFactor;
 
-booksWrappe.innerHTML =
-  `<div class="books"> 
-<div class="book">
-<figure class="book__img--wrapper">
-<img  class="book__img"   src="./assets/Deep Work.jpg" alt="">
-</figure>
-<div class="book__title"> Deep Work 
-</div>
-<div class="book__ratings">
-  <i class="fas fa-star"> </i>
-  <i class="fas fa-star"> </i>
-  <i class="fas fa-star"> </i>
-  <i class="fas fa-star"> </i>
-  <i class="fas fa-star-half-alt"> </i>
-</div>
-<div class="book__price">
-    <span class="book__price--normal"> $59.95</span> $14.95
-</div>
-</div>`
+  for (let i = 0; i < shapes.length; ++i) {
+    const isOdd = i % 2 !== 0;
+    const boolInt = isOdd ? -1 : 1;
+    // Added rotate after tutorial
+    shapes[i].style.transform = `translate(${x * boolInt}px, ${y * boolInt}px) rotate(${x * boolInt * 10}deg)`
+  }
+}
+
+function toggleContrast() {
+  contrastToggle = !contrastToggle;
+  if (contrastToggle) {
+    document.body.classList += " dark-theme"
+  }
+  else {
+    document.body.classList.remove("dark-theme")
+  }
+}
+
+function contact(event) {
+    event.preventDefault ();
+    const loading = document.querySelector ('.modal__overlay--loading');
+    const success = document.querySelector ('.modal__overlay--success');
+    loading.classList =+ " modal__overlay--visible"
+    emailjs
+    .sendForm(
+        'service_63b5yns',
+        'template_zshd8jm',
+        event.target, 
+        'yPMl9vZDr5x2JO6Hd'
+    ).then(() => {
+    
+        loading.classList.remove ("modal__overlay--visible");
+        success.classList += " modal__overlay--visible";
+    }).catch (() => {
+        loading.classList.remove ("modal__overlay--visible");
+        alert(
+            "The email service is temporarily unavailable. Please contact me directly at Rooyaabid93@gmail.com "
+        );
+    })
 
 }
 
-setTimout (() => { 
-renderBooks();
-}); 
- 
+function toggleModal (){
+    if (isModalOpen) {
+        isModalOpen = false;
+        return document.body.classList.remove ("modal--open")
 
- //FAKE DATA 
-
-function getBooks() {
-    return [  
-        {
-            id: 1,
-            title: "Crack the Coding Interview",
-            url: "assets/crack the coding interview.png",
-            originalPrice: 49.95,
-            salePrice: 14.95,
-            rating: 4.5,
-          },
-          {
-            id: 2,
-            title: "Atomic Habits",
-            url: "assets/atomic habits.jpg",
-            originalPrice: 39,
-            salePrice: null,
-            rating: 5,
-          },
+    }
+    isModalOpen = true;
+    document.body.classList += " modal--open";
 }
